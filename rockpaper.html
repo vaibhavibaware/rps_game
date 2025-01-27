@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rock Paper Scissors</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f0f4f8;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      margin-top: 20px;
+      font-size: 2.5rem;
+      color: #333;
+    }
+
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 40px;
+    }
+
+    .choices {
+      display: flex;
+      gap: 20px;
+    }
+
+    .choice {
+      background-color: #fff;
+      border: 2px solid #007BFF;
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .choice:hover {
+      background-color: #007BFF;
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    .result {
+      margin-top: 30px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #007BFF;
+    }
+
+    .score {
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
+
+    .restart-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .restart-btn:hover {
+      background-color: #0056b3;
+    }
+
+    .animated-choice {
+      animation: choiceAnimation 1s ease-in-out;
+    }
+
+    @keyframes choiceAnimation {
+      0% { transform: scale(0.8); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <h1>Rock Paper Scissors</h1>
+  <div class="game-container">
+    <div class="choices">
+      <div class="choice" data-choice="rock">✊</div>
+      <div class="choice" data-choice="paper">✋</div>
+      <div class="choice" data-choice="scissors">✌</div>
+    </div>
+    <div class="score" id="score">Wins: 0 | Losses: 0 | Draws: 0</div>
+    <div class="result" id="result">Choose your move!</div>
+    <button class="restart-btn" id="restart">Restart</button>
+  </div>
+
+  <script>
+    const choices = document.querySelectorAll('.choice');
+    const result = document.getElementById('result');
+    const scoreDisplay = document.getElementById('score');
+    const restartBtn = document.getElementById('restart');
+    const choicesArray = ['rock', 'paper', 'scissors'];
+
+    let score = { wins: 0, losses: 0, draws: 0 };
+
+    choices.forEach(choice => {
+      choice.addEventListener('click', () => {
+        const userChoice = choice.getAttribute('data-choice');
+        animateChoice(choice);
+        const computerChoice = choicesArray[Math.floor(Math.random() * 3)];
+        const winner = determineWinner(userChoice, computerChoice);
+        updateScore(winner);
+        displayResult(userChoice, computerChoice, winner);
+      });
+    });
+
+    restartBtn.addEventListener('click', () => {
+      score = { wins: 0, losses: 0, draws: 0 };
+      scoreDisplay.textContent = `Wins: 0 | Losses: 0 | Draws: 0`;
+      result.textContent = 'Choose your move!';
+    });
+
+    function determineWinner(user, computer) {
+      if (user === computer) return 'Draw';
+      if (
+        (user === 'rock' && computer === 'scissors') ||
+        (user === 'paper' && computer === 'rock') ||
+        (user === 'scissors' && computer === 'paper')
+      ) {
+        return 'You Win!';
+      } else {
+        return 'You Lose!';
+      }
+    }
+
+    function displayResult(user, computer, winner) {
+      result.textContent = `You chose ${user}, computer chose ${computer}. ${winner}`;
+    }
+
+    function updateScore(winner) {
+      if (winner === 'You Win!') {
+        score.wins += 1;
+      } else if (winner === 'You Lose!') {
+        score.losses += 1;
+      } else {
+        score.draws += 1;
+      }
+      scoreDisplay.textContent = `Wins: ${score.wins} | Losses: ${score.losses} | Draws: ${score.draws}`;
+    }
+
+    function animateChoice(choice) {
+      choice.classList.add('animated-choice');
+      setTimeout(() => {
+        choice.classList.remove('animated-choice');
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
